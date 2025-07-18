@@ -25,15 +25,22 @@ if (!hash_equals($expected, $qr['token'])) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM presences WHERE etudiant_id = ? AND cours_id = ? AND type_pointage = ?");
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM presences 
+    WHERE etudiant_id = ? 
+    AND cours_id = ? 
+    AND type_pointage = ? 
+    AND DATE(date_heure) = CURDATE()");
+
 $stmt->execute([$etudiant_id, $qr['cours_id'], $qr['type_pointage']]);
 
 if ($stmt->fetchColumn() > 0) {
-    echo json_encode(['success' => false, 'message' => 'Vous avez déjà pointé ce type de présence.']);
+    echo json_encode(['success' => false, 'message' => 'Vous avez déjà pointé ce type de présence aujourd\'hui.']);
     exit;
 }
 
-$stmt = $pdo->prepare("INSERT INTO presences (etudiant_id, cours_id, date_heure, type_pointage) VALUES (?, ?, NOW(), ?)");
+$stmt = $pdo->prepare("INSERT INTO presences (etudiant_id, cours_id, date_heure, type_pointage) 
+    VALUES (?, ?, NOW(), ?)");
+
 $stmt->execute([$etudiant_id, $qr['cours_id'], $qr['type_pointage']]);
 
 echo json_encode(['success' => true, 'message' => 'Présence enregistrée avec succès !']);

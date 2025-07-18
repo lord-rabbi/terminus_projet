@@ -12,3 +12,11 @@ try {
     die("Erreur de connexion à la base de données : " . $e->getMessage());
 }
 ?>
+
+<?php 
+
+$con = mysqli_connect("localhost", "root", "Root1234", "gestion_presence");
+if (!$con) {
+    die('Error:' . mysqli_connect_error());
+}
+?>
